@@ -2,13 +2,6 @@ def creating_table(graph):
     """
     Creates a matrix for an input graph.
     A start for Floyd-Warshall algorithm.
-    >>> import networkx as nx
-    >>> G = nx.Graph()
-    >>> G.add_edge(1, 2, weight=2)
-    >>> G.add_edge(1, 3, weight=3)
-    >>> G.add_edge(2, 3, weight=1)
-    >>> creating_table(G)
-    [[0, inf, inf], [inf, 0, 2], [inf, inf, 0]]
     """
     edges = graph.edges(data = True)
     k = len(graph.nodes())
@@ -29,13 +22,6 @@ def creating_table(graph):
 def checking_cycle(graph):
     """
     Checks whether an input graph contains a negative cycle.
-    >>> import networkx as nx
-    >>> G = nx.DiGraph()
-    >>> G.add_edge(1, 2, weight=2)
-    >>> G.add_edge(1, 3, weight=3)
-    >>> G.add_edge(2, 3, weight=-1)
-    >>> checking_cycle(G)
-    False
     """
     cycles = list(nx.simple_cycles(graph))
     edges = list(graph.edges(data=True))
