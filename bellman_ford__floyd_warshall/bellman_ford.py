@@ -10,7 +10,7 @@ def belman_ford_algorithm(graph: nx.Graph, start: int = 0) -> tuple[list[float],
     """
     graph = graph.to_directed()
     num_nodes = graph.number_of_nodes()
-    edges = graph.edges()
+    edges = graph.edges(data="weight")
 
     distances = {idx: float("inf") for idx in range(num_nodes)}
     distances[start] = 0
