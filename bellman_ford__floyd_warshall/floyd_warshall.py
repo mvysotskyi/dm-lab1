@@ -1,49 +1,43 @@
-def checking_cycle(graph):
-    """
-    Checks whether an input graph contains a negative cycle.
-    """
-    cycles = list(nx.simple_cycles(graph))
-    edges = list(graph.edges(data=True))
+"""
+Floyd-Warshall algorithm.
+"""
 
-    cycle_0 = {}
-    for edge in edges:
-        if edge[0] != edge[1]:
-            cycle_0[(edge[0], edge[1])] = edge[2]
+import networkx as nx
 
-    for cyc in cycles:
-        total_count = 0
-        i = 0
-        while i < len(cyc)-1:
-            elem1 = cyc[i]
-            elem2 = cyc[i+1]
-            total_count += cycle_0[(elem1, elem2)]['weight']
-            i += 1
-        if total_count < 0 and len(cyc) > 2:
-            print('Negative cycle! The result might be wrong.')
+def have_negative_cycle(matrix: list[list[float]]) -> bool:
+    """
+    Function checks for negative cycle in matrix.
+    """
+    for idx, _ in enumerate(matrix):
+        if matrix[idx][idx] < 0:
             return True
+
     return False
 
+def floyd_warshall_algorithm(graph: nx.Graph) -> list[list[float]]:
+    """
+    Function implements Floyd-Warshall's algorithm.
+    If there is a negative cycle in graph, function returns None.
+    """
+    graph = graph.to_directed()
+    num_nodes = graph.number_of_nodes()
+    edges = graph.edges(data="weight")
 
-def warshall_search(graph):
-    """
-    Floyd-Warshall algorithm, main function.
-    """
-#     if checking_cycle(graph):
-#         return None
-    edges = graph.edges(data = True)
-    k = len(graph.nodes())
-    matrix = [[inf for i in range(k)] for j in range(k)]
-    for ind in range(k):
-        matrix[ind][ind] = 0
-    for elem in edges:
-        matrix[elem[0]][elem[1]] = elem[2]['weight']
-    k = len(graph.nodes())
-    for k_counter in range(1, k):
-        for i in range(k):
-            for j in range(k):
-                matrix[i][j] = min(matrix[i][j], matrix[i][k_counter]+matrix[k_counter][j])
-    for i in range(k):
-        info = {}
-        for ind, elem in enumerate(matrix[i]):
-            info[ind] = elem
-        print(f'Distances with {i} source: {info}')
+    matrix = [[float("inf") for _ in range(num_nodes)] for _ in range(num_nodes)]
+
+    for idx in range(num_nodes):
+        matrix[idx][idx] = 0
+
+    for edge in edges:
+        matrix[edge[0]][edge[1]] = edge[2]
+
+    for k in range(num_nodes):
+        for i in range(num_nodes):
+            for j in range(num_nodes):
+                if matrix[i][j] > matrix[i][k] + matrix[k][j]:
+                    matrix[i][j] = matrix[i][k] + matrix[k][j]
+
+    if have_negative_cycle(matrix):
+        return None
+
+    return matrix
