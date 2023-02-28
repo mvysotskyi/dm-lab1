@@ -2,17 +2,20 @@
 Bellman-Ford's alorithm implementation.
 """
 
-def belman_ford_algorithm(graph, start):
+import networkx as nx
+
+def belman_ford_algorithm(graph: nx.Graph, start: int = 0) -> tuple[list[float], bool]:
     """
     Function implements Belman-Ford's algorithm.
     """
-    n = len(graph.nodes())
+    graph = graph.to_directed()
+    num_nodes = graph.number_of_nodes()
     edges = graph.edges()
 
-    distances = {i: 0xFFFFFF for i in range(1, n + 1)}
+    distances = {idx: float("inf") for idx in range(num_nodes)}
     distances[start] = 0
 
-    for _ in range(n - 1):
+    for _ in range(num_nodes - 1):
         for edge in edges:
             if distances[edge[1]] > (distances[edge[0]] + edge[2]):
                 distances[edge[1]] = distances[edge[0]] + edge[2]
