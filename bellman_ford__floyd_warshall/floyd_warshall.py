@@ -1,24 +1,3 @@
-def creating_table(graph):
-    """
-    Creates a matrix for an input graph.
-    A start for Floyd-Warshall algorithm.
-    """
-    edges = graph.edges(data = True)
-    k = len(graph.nodes())
-    matrix = [[inf for i in range(k)] for j in range(k)]
-    cycle_0 = {}
-    for edge in edges:
-        if edge[0] != edge[1]:
-            cycle_0[(edge[0], edge[1])] = edge[2]
-    for i in range(k):
-        for j in range(k):
-            if i == j:
-                matrix[i][j] = 0
-            elif (i, j) in list(cycle_0.keys()):
-                matrix[i][j] = cycle_0[(i, j)]['weight']
-    return matrix
-
-
 def checking_cycle(graph):
     """
     Checks whether an input graph contains a negative cycle.
@@ -49,17 +28,20 @@ def warshall_search(graph):
     """
     Floyd-Warshall algorithm, main function.
     """
-    checking_cycle(graph)
-    started = creating_table(graph)
+    edges = graph.edges(data = True)
+    k = len(graph.nodes())
+    matrix = [[inf for i in range(k)] for j in range(k)]
+    for ind in range(k):
+        matrix[ind][ind] = 0
+    for elem in edges:
+        matrix[elem[0]][elem[1]] = elem[2]['weight']
     k = len(graph.nodes())
     for k_counter in range(1, k):
         for i in range(k):
             for j in range(k):
-                started[i][j] = min(started[i][j], started[i][k_counter]+started[k_counter][j])
-    res = ''
+                matrix[i][j] = min(matrix[i][j], matrix[i][k_counter]+matrix[k_counter][j])
     for i in range(k):
         info = {}
-        for ind, elem in enumerate(started[i]):
+        for ind, elem in enumerate(matrix[i]):
             info[ind] = elem
-        res += f'Distances with {i} source: {info}\n'
-    return res.strip()
+        print(f'Distances with {i} source: {info}')
