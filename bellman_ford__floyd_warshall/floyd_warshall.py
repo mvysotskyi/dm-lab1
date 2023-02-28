@@ -28,6 +28,8 @@ def warshall_search(graph):
     """
     Floyd-Warshall algorithm, main function.
     """
+#     if checking_cycle(graph):
+#         return None
     edges = graph.edges(data = True)
     k = len(graph.nodes())
     matrix = [[inf for i in range(k)] for j in range(k)]
